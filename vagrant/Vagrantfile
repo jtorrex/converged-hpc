@@ -1,0 +1,72 @@
+Vagrant.configure("2") do |config|
+
+  config.vm.provider :libvirt do |libvirt|
+    libvirt.cpu_mode = 'host-model'
+    libvirt.cpus = 2
+    libvirt.disk_bus = 'virtio'
+    libvirt.disk_driver :cache => 'writeback'
+    libvirt.driver = 'kvm'
+    libvirt.memory = 2048
+    libvirt.memorybacking :access, :mode => 'shared'
+    libvirt.nested = true
+    libvirt.nic_model_type = 'virtio'
+    libvirt.storage :file, bus: 'virtio', cache: 'writeback'
+    libvirt.video_type = 'virtio'
+  end
+
+  config.vm.define "head" do |head|
+    head.vm.hostname = "head"
+    head.vm.box = "roboxes-x64/ubuntu2304"
+    head.vm.box_check_update = false
+    head.vm.network :private_network, ip: "192.168.56.200"
+    head.vm.provision "shell", path: "scripts/common.sh"
+    head.vm.provision "shell", path: "scripts/head.sh"
+    config.vm.synced_folder "./data", "/data"
+  end
+
+  #config.vm.define "storage" do |storage|
+  #  storage.vm.hostname = "storage"
+  #  storage.vm.box = "roboxes-x64/ubuntu2304"
+  #  storage.vm.network :private_network, ip: "192.168.56.210"
+  #  storage.vm.provision "shell", path: "scripts/common.sh"
+  #  storage.vm.provision "shell", path: "scripts/storage.sh"
+  #  config.vm.synced_folder "./data", "/data"
+  #end
+
+  config.vm.define "node01" do |node01|
+    node01.vm.hostname = "node01"
+    node01.vm.network :private_network, ip: "192.168.56.201",
+      libvirt__network_name: "vagrant0",
+      libvirt__dhcp_enabled: false,
+      libvirt__host_ip: '192.168.56.200'
+    node01.vm.provider :libvirt do |node01|
+      node01.storage :file, :size => '10G', :type => 'qcow2'
+      node01.boot 'network'
+    end
+  end
+
+  config.vm.define "node02" do |node02|
+    node02.vm.hostname = "node02"
+    node02.vm.network :private_network, ip: "192.168.56.202",
+      libvirt__network_name: "vagrant0",
+      libvirt__dhcp_enabled: false,
+      libvirt__host_ip: '192.168.56.200'
+    node02.vm.provider :libvirt do |node02|
+      node02.storage :file, :size => '10G', :type => 'qcow2'
+      node02.boot 'network'
+    end
+  end
+
+  config.vm.define "node03" do |node03|
+    node03.vm.hostname = "node03"
+    node03.vm.network :private_network, ip: "192.168.56.203",
+      libvirt__network_name: "vagrant0",
+      libvirt__dhcp_enabled: false,
+      libvirt__host_ip: '192.168.56.200'
+    node03.vm.provider :libvirt do |node03|
+      node03.storage :file, :size => '10G', :type => 'qcow2'
+      node03.boot 'network'
+    end
+  end
+
+end
