@@ -22,7 +22,7 @@ Vagrant.configure("2") do |config|
       libvirt__dhcp_enabled: false
     
     head.vm.provider :libvirt do |libvirt|
-      libvirt.cpus = '2'
+      libvirt.cpus = '4'
       libvirt.memory = '2048'
     end
 
@@ -30,8 +30,9 @@ Vagrant.configure("2") do |config|
     
     head.vm.synced_folder "./data", "/data", type: "nfs", nfs_version: 4, nfs_udp: false
 
-    head.vm.provision "shell", path: "scripts/common.sh"
-    head.vm.provision "shell", path: "scripts/head.sh"
+    head.vm.provision "shell", path: "data/scripts/common.sh"
+    head.vm.provision "shell", path: "data/scripts/head.sh"
+    head.vm.provision "shell", path: "data/scripts/configure-maas.sh"
 
   end
 
@@ -50,6 +51,7 @@ Vagrant.configure("2") do |config|
     node01.vm.network "private_network",
       ip: "10.10.10.101",
       netmask: "255.255.255.0",
+      mac: "3a:15:0b:5f:61:87",
       libvirt__network_name: "cluster",
       libvirt__dhcp_enabled: false,
       libvirt__host_ip: '10.10.10.100'
@@ -59,10 +61,10 @@ Vagrant.configure("2") do |config|
       libvirt.memory = '1024'
       libvirt.machine_virtual_size = '10'
       boot_network = {'network' => 'cluster'}
-      libvirt.boot boot_network
+      libvirt.boot boot_network 
     end
 
-    node01.vm.provision "shell", path: "scripts/common.sh"
+    node01.vm.provision "shell", path: "data/scripts/common.sh"
 
   end
 
@@ -70,21 +72,21 @@ Vagrant.configure("2") do |config|
     node02.vm.hostname = "node02"
 
     node02.vm.network "private_network",
-      ip: "10.10.10.102",
-      netmask: "255.255.255.0",
+      type: "dhcp",
+      mac: "0a:b5:2c:25:d9:a8",
       libvirt__network_name: "cluster",
       libvirt__dhcp_enabled: false,
       libvirt__host_ip: '10.10.10.100'
-    
+
     node02.vm.provider :libvirt do |libvirt|
       libvirt.cpus = '1'
       libvirt.memory = '1024'
       libvirt.machine_virtual_size = '10'
       boot_network = {'network' => 'cluster'}
-      libvirt.boot boot_network
+      libvirt.boot boot_network 
     end
 
-    node02.vm.provision "shell", path: "scripts/common.sh"
+    node02.vm.provision "shell", path: "data/scripts/common.sh"
 
   end
   
@@ -92,8 +94,8 @@ Vagrant.configure("2") do |config|
     node03.vm.hostname = "node03"
 
     node03.vm.network "private_network",
-      ip: "10.10.10.103",
-      netmask: "255.255.255.0",
+      type: "dhcp",
+      mac: "92:d7:d0:a1:5d:c9",
       libvirt__network_name: "cluster",
       libvirt__dhcp_enabled: false,
       libvirt__host_ip: '10.10.10.100'
@@ -104,10 +106,10 @@ Vagrant.configure("2") do |config|
       libvirt.memory = '1024'
       libvirt.machine_virtual_size = '10'
       boot_network = {'network' => 'cluster'}
-      libvirt.boot boot_network
+      libvirt.boot boot_network 
     end
 
-    node03.vm.provision "shell", path: "scripts/common.sh"
+    node03.vm.provision "shell", path: "data/scripts/common.sh"
 
   end
 
