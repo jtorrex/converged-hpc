@@ -1,0 +1,16 @@
+---
+- name: Install packages
+  ansible.builtin.apt:
+    name:
+      - curl
+      - gcc
+      - git
+      - jq
+      - make
+      - pdsh
+      - python3
+      - python3-pip
+      - tmux
+      - unzip
+      - vim
+    state: present
