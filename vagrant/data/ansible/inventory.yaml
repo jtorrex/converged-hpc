@@ -1,0 +1,5 @@
+[cluster_head]
+head
+
+[cluster_compute]
+node[01:03]
