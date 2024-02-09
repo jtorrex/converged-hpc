@@ -26,7 +26,7 @@ curl -LO https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 echo 'Creating worker join command'
-sudo k0s token create --role=worker > /data/config/worker-token.txt
+sudo k0s token create --role=worker > /data/config/k8s/worker-token.txt
 
 echo "install kustomize"
 mkdir -p /usr/local/bin
