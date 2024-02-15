@@ -4,4 +4,4 @@
   roles:
     - base
     - munge
-    - slurm
+    - slurm-client
