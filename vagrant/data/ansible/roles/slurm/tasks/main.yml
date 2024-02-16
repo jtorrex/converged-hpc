@@ -33,10 +33,15 @@
 - name: Include Install Tasks
   include_tasks: install.yml
 
-- name: Include Service Tasks
-  include_tasks: service.yml
+    #- name: Include Service Tasks
+    #  include_tasks: service.yml
 
-- name: Create Tmpfile
+- name: Create Slurm Configuration
   copy:
     src: files/etc/slurm/slurm.conf
     dest: /etc/slurm/slurm.conf
+
+- name: Create Slurm cgroups Configuration
+  copy:
+    src: files/etc/slurm/cgroup.conf
+    dest: /etc/slurm/cgroup.conf
