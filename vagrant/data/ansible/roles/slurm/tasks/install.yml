@@ -17,53 +17,36 @@
   block:
   - name: Download Tarball
     get_url:
-      url: '{{slurm_tar_baseurl}}/slurm-{{slurm_version}}.tar.bz2'
-      dest: '{{paths.src}}'
+      url: 'https://download.schedmd.com/slurm/slurm-23.11.3.tar.bz2'
+      dest: '/usr/local/src/slurm'
     register: slurm_archive
 
   - name: Inflate Tarball
     unarchive:
       src: '{{slurm_archive.dest}}'
-      dest: '{{paths.src}}'
-      creates: '{{slurm_paths.src}}'
+      dest: '/usr/local/src/'
+      creates: '/usr/local/src/slurm-23.11.3'
       remote_src: yes
-
-  - name: Symbolic Link Directory
-    file:
-      src: '{{slurm_paths.src}}-{{slurm_version}}'
-      dest: '{{slurm_paths.src}}'
-      state: link
-  when: not slurm_version.startswith("b:")
-
-- name: Slurm From Git Branch
-  git:
-    repo: '{{slurm_git_url}}'
-    dest: '{{slurm_paths.src}}'
-    version: "{{slurm_version|regex_replace('^b:', '')}}"
-    clone: yes
-    depth: '1'
-  when: slurm_version.startswith("b:")
 
 - name: Configure
   shell:
     cmd: >
-      {{slurm_paths.src}}/configure
-      --prefix={{slurm_paths.install}}
-      --sysconfdir={{slurm_paths.etc}}
-      --with-jwt
+     /usr/local/src/slurm-23.11.3/configure
+      --prefix=/usr/local
+      --sysconfdir=/usr/local/etc/slurm
       --with-systemdsystemunitdir=/usr/lib/systemd/system/
       > /dev/null
-    chdir: '{{slurm_paths.build}}'
+    chdir: '/tmp/slurm'
 
-- name: Make Install Slurm
+- name: Make Slurm
   shell:
-    cmd: make --jobs install > /dev/null
-    chdir: '{{slurm_paths.build}}'
+    cmd: make > /dev/null
+    chdir: '/usr/local/src/slurm-23.11.3'
 
-- name: Make Install Slurm Contribs
+- name: Make install Slurm
   shell:
-    cmd: make --jobs install > /dev/null
-    chdir: '{{slurm_paths.build}}/contribs'
+    cmd: make install > /dev/null
+    chdir: '/usr/local/src/slurm-23.11.3'
 
 - name: Add Conf to 'ld.so.conf.d/'
   template:
@@ -73,7 +56,7 @@
 - name: Ldconfig
   command:
     cmd: ldconfig
-    chdir: '{{slurm_paths.src}}'
+    chdir: '/usr/local/src/slurm-23.11.3'
 
 - name: Add Slurm to 'profile.d/'
   template:
@@ -82,18 +65,18 @@
 
 - name: Add Slurm shell completion
   file:
-    src: '{{slurm_paths.src}}/contribs/slurm_completion_help/slurm_completion.sh'
+    src: '/usr/local/src/slurm-23.11.3/contribs/slurm_completion_help/slurm_completion.sh'
     dest: /etc/bash_completion.d/slurm
     state: link
 
 - name: Symbolic Link Directory
   file:
-    src: '{{slurm_paths.etc}}'
+    src: '/usr/local/etc/slurm'
     dest: /etc/slurm
     state: link
 
 - name: Symbolic Link to PluginDir
   file:
-    src: '{{slurm_paths.install}}/lib/slurm'
+    src: '/usr/local/lib/slurm'
     dest: /usr/lib64/slurm
     state: link
