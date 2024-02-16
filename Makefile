@@ -18,7 +18,7 @@ destroy-head:
 destroy-kube-node:
 	cd vagrant && vagrant destroy node01
 
-destryo-slurm-node:
+destroy-slurm-node:
 	cd vagrant && vagrant destroy node02
 
 destroy-hybrid-node:
