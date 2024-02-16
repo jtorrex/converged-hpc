@@ -15,3 +15,7 @@ sudo echo "10.10.10.110    storage" >> /etc/hosts
 # configure root key
 sudo mkdir -p $HOME/.ssh
 sudo cat /data/config/cluster-ssh-key.pub >> $HOME/.ssh/authorized_keys
+
+# configure Vagrant key
+sudo mkdir -p /home/vagrant/.ssh
+sudo cat /data/config/cluster-ssh-key.pub >> /home/vagrant/.ssh/authorized_keys
