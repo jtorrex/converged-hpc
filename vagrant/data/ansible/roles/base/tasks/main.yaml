@@ -6,6 +6,7 @@
       - gcc
       - git
       - jq
+      - libdbus-1-dev
       - make
       - pdsh
       - python3
