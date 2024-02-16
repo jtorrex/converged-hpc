@@ -36,12 +36,20 @@
   apt:
     name:
       - munge
+      - libmunge-dev
     state: present
 
 - name: Mkdir
   file:
     path: /etc/munge
     state: directory
+    owner: munge
+    group: munge
+
+- name: Copy Munge key
+  copy:
+    src: files/etc/munge/munge.key
+    dest: /etc/munge/munge.key
     owner: munge
     group: munge
 
