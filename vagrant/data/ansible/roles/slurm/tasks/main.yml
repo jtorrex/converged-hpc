@@ -33,9 +33,6 @@
 - name: Include Install Tasks
   include_tasks: install.yml
 
-    #- name: Include Service Tasks
-    #  include_tasks: service.yml
-
 - name: Create Slurm Configuration
   copy:
     src: files/etc/slurm/slurm.conf
@@ -45,3 +42,6 @@
   copy:
     src: files/etc/slurm/cgroup.conf
     dest: /etc/slurm/cgroup.conf
+
+- name: Include Service Tasks
+  include_tasks: service.yml

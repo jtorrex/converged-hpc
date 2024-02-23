@@ -31,22 +31,15 @@
 - name: Configure
   shell:
     cmd: >
-     /usr/local/src/slurm-23.11.3/configure
-      --prefix=/usr/local
-      --sysconfdir=/usr/local/etc/slurm
-      --with-systemdsystemunitdir=/usr/lib/systemd/system/
-      > /dev/null
-    chdir: '/tmp/slurm'
-
-- name: Make Slurm
-  shell:
-    cmd: make > /dev/null
+     ./configure --prefix=/usr/local --sysconfdir=/etc/slurm --with-systemdsystemunitdir=/usr/lib/systemd/system > /dev/null
     chdir: '/usr/local/src/slurm-23.11.3'
+  become: true
 
 - name: Make install Slurm
   shell:
     cmd: make install > /dev/null
     chdir: '/usr/local/src/slurm-23.11.3'
+  become: true
 
 - name: Add Conf to 'ld.so.conf.d/'
   template:
@@ -80,3 +73,8 @@
     src: '/usr/local/lib/slurm'
     dest: /usr/lib64/slurm
     state: link
+
+- name: Reload systemd
+  shell:
+    cmd: systemctl daemon-reload
+  become: true

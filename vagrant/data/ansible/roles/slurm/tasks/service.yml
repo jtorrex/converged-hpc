@@ -13,23 +13,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Install Slurmd Service
-  template:
-    src: systemd/slurmd.service.j2
-    dest: /usr/lib/systemd/system/slurmd.service
-    mode: 0o644
-  notify: Handle Slurmd Service
+- name: Reload systemd
+  shell:
+    cmd: systemctl daemon-reload
+  become: true
 
-- name: Install slurm_load_bigquery Service
-  template:
-    src: systemd/slurm_load_bq.service.j2
-    dest: /usr/lib/systemd/system/slurm_load_bq.service
-    mode: 0o644
-  notify: Handle slurm_load_bigquery Service
+- name: Handle Slurmctld Service
+  systemd:
+    name: slurmctld
+    enabled: yes
+    state: stopped
+  when: inventory_hostname == "head"
 
-- name: Install slurm_load_bigquery Timer
-  template:
-    src: systemd/slurm_load_bq.timer.j2
-    dest: /usr/lib/systemd/system/slurm_load_bq.timer
-    mode: 0o644
-  notify: Handle slurm_load_bigquery Timer
+- name: Handle slurmd Service
+  systemd:
+    name: slurmd
+    enabled: yes
+    state: stopped
+  when: inventory_hostname == "node*"
