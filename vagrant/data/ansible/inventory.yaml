@@ -2,4 +2,4 @@
 head
 
 [cluster_compute]
-node02
+node[01:03]
