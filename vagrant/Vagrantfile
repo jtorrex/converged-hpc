@@ -32,7 +32,7 @@ Vagrant.configure("2") do |config|
     head.vm.provision "shell", path: "data/scripts/common.sh"
     head.vm.provision "shell", path: "data/scripts/k8s-reqs.sh"
     head.vm.provision "shell", path: "data/scripts/head.sh"
-    head.vm.provision "shell", path: "data/scripts/ansible.sh"
+    head.vm.provision "shell", path: "data/scripts/ansible-head.sh"
 
   end 
 
@@ -81,7 +81,8 @@ Vagrant.configure("2") do |config|
 
     node02.vm.synced_folder "./data", "/data", type: "nfs", nfs_version: 4, nfs_udp: false
     node02.vm.provision "shell", path: "data/scripts/common.sh"
-    #node02.vm.provision "shell", path: "data/scripts/slurm.sh"
+    node02.vm.provision "shell", path: "data/scripts/k8s-reqs.sh"
+    node02.vm.provision "shell", path: "data/scripts/node-k8s.sh"
 
   end
 
@@ -107,6 +108,7 @@ Vagrant.configure("2") do |config|
     node03.vm.synced_folder "./data", "/data", type: "nfs", nfs_version: 4, nfs_udp: false
     node03.vm.provision "shell", path: "data/scripts/common.sh"
     node03.vm.provision "shell", path: "data/scripts/k8s-reqs.sh"
+    node03.vm.provision "shell", path: "data/scripts/node-k8s.sh"
   end
 
 end
