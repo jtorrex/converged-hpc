@@ -2,7 +2,6 @@
 Description=Slurm controller daemon
 After=network-online.target remote-fs.target munge.service sssd.service
 Wants=network-online.target
-ConditionPathExists={{slurm_paths.install}}/etc/slurm/slurm.conf
 
 [Service]
 Type=notify
@@ -12,7 +11,7 @@ User=slurm
 Group=slurm
 RuntimeDirectory=slurmctld
 RuntimeDirectoryMode=0755
-ExecStart={{slurm_paths.install}}/sbin/slurmctld -D $SLURMCTLD_OPTIONS
+ExecStart={{slurm_paths.install}}/sbin/slurmctld -D /etc/slurm/slurm.conf -L /var/log/slurm/slurmctld.log
 ExecReload=/bin/kill -HUP $MAINPID
 LimitNOFILE=65536
 @SYSTEMD_TASKSMAX_OPTION@
@@ -23,4 +22,4 @@ LimitNOFILE=65536
 #StandardError=null
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=multi-/usr/local/sbin/slurmctld -f /etc/slurm/slurm.conf -L /var/log/slurm/slurmctld.loguser.target
