@@ -1,0 +1,52 @@
+---
+- name: Install dependencies
+  ansible.builtin.apt:
+    pkg:
+      - build-essential
+      - libseccomp-dev
+      - pkg-config
+      - uidmap
+      - squashfs-tools
+      - fakeroot
+      - cryptsetup
+      - tzdata
+      - curl
+      - wget
+      - git
+
+- name: Download Go From Tarball
+  block:
+  - name: Download Go
+    get_url:
+      url: 'https://dl.google.com/go/go{{go_version}}.{{os}}-{{arch}}.tar.gz'
+      dest: '/tmp/go{{go_version}}.{{os}}-{{arch}}.tar.gz'
+    register: go_archive 
+
+  - name: Inflate Tarball
+    unarchive:
+      src: '/tmp/go{{go_version}}.{{os}}-{{arch}}.tar.gz'
+      dest: '/usr/local'
+      creates: '/usr/local/go'
+      remote_src: yes
+
+- name: Export GO dir to PATH
+  shell:
+    cmd: >
+     echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
+  become: true
+
+- name: Install golangci-lint
+  shell:
+    cmd: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.51.1
+  become: true
+
+- name: Clone the Apptainer repo
+  shell:
+    cmd: rm -rf /usr/local/src/apptainer/ && git clone https://github.com/apptainer/apptainer.git /usr/local/src/apptainer
+  become: true
+
+- name: Make install Apptainer
+  shell:
+    cmd: export PATH=$PATH:/usr/local/go/bin && ./mconfig && cd $(/bin/pwd)/builddir && make && make install
+    chdir: '/usr/local/src/apptainer'
+  become: true
