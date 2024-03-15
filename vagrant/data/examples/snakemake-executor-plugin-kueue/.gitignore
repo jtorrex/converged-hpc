@@ -1,0 +1,15 @@
+bin/
+lib/
+*.db
+.snakemake
+snakemake_executor_kueue.egg-info
+env
+.env
+apigen/_build
+build
+docs/_build
+release
+dist/
+__pycache__
+*.img
+/.eggs
