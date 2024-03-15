@@ -50,3 +50,4 @@ Thumbs.db
 
 # Vagrant subdir
 vagrant/.vagrant/
+vagrant/data/examples/env/
